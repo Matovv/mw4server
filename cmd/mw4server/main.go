@@ -20,11 +20,8 @@ func main() {
 		"session-1",
 		"test",	
 	)
-
 	sessionManager.AddSession(testSession)
-
 	go sessionManager.Run()
-
 	server := network.NewServer(
 		sessionManager,
 	)

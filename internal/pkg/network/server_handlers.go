@@ -12,7 +12,6 @@ func (s *Server) handleJoinSession(
 	client *Client,
 	raw json.RawMessage,
 ) error {
-
 	var req JoinSessionRequest	
 	if err := json.Unmarshal(raw, &req); err != nil {
 		return err
@@ -38,7 +37,6 @@ func (s *Server) handleJoinSession(
 		Tick:      session.GetTick(),
 	}	
 	client.Send(response)
-
 	return nil
 }
 
@@ -46,9 +44,7 @@ func (s *Server) handleMove(
     client *Client,
     raw json.RawMessage,
 ) error {
-
     var req MoveRequest
-
     if err := json.Unmarshal(raw, &req); err != nil {
         return err
     }
@@ -59,7 +55,6 @@ func (s *Server) handleMove(
 	if err != nil {
 		return err
 	}	
-
     session.CommandPush(
         &command.MoveCommand{
             PlayerID: types.PlayerID(client.ID),

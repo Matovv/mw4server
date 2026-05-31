@@ -6,13 +6,14 @@ type UnitID uint64
 type ObjectID uint64
 
 type TargetID uint64
+
 func (tid TargetID) ToUnitID() UnitID {
 	return UnitID(tid)
 }
+
 func (tid TargetID) ToObjectID() ObjectID {
 	return ObjectID(tid)
 }
-
 
 type Vec2 struct {
 	X int64

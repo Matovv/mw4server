@@ -4,9 +4,7 @@ import "github.com/Matovv/mw4server/internal/pkg/types"
 
 type Object struct {
 	ID uint64
-
 	Type ObjectType
-
 	Position types.Vec2
 }
 

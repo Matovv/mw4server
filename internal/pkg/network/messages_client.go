@@ -12,6 +12,5 @@ type MoveRequest struct {
 
 type AttackRequest struct {
     UnitID uint64
-
     TargetID uint64
 }

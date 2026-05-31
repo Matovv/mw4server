@@ -6,7 +6,6 @@ type World struct {
 	MapName string
 	Units   map[types.UnitID]*Unit
 	Objects map[types.ObjectID]*Object
-
 	NeutralAI *NeutralAI
 }
 

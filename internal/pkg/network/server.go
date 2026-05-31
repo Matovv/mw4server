@@ -96,9 +96,7 @@ func (s *Server) HandlePacket(
     client *Client,
     packet Packet,
 ) {
-
     switch packet.Type {
-
     case "join_session":
 		log.Println("handling join_session")
 		//log.Println("data:", string(packet.Data))
@@ -109,7 +107,6 @@ func (s *Server) HandlePacket(
 		if err != nil {
 			log.Println("failed join_session:", err)			
 		}
-
     case "move":
 		log.Println("handling move")
         err := s.handleMove(
