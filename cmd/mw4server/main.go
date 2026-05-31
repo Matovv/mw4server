@@ -1,10 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/Matovv/mw4server/internal/app/session"
 	"github.com/Matovv/mw4server/internal/pkg/network"
+)
+
+const (
+	PORT = 8880
 )
 
 func main() {
@@ -24,5 +29,6 @@ func main() {
 		sessionManager,
 	)
 	log.Println("init server...")
-	log.Fatal(server.Start(":8080"))
+	log.Println("port:", PORT)
+	log.Fatal(server.Start(fmt.Sprintf(":%d", PORT)))
 }

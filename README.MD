@@ -1,7 +1,8 @@
-Magic Wars 4 - Server
+# Magic Wars 4 - Server
 
-Network:
-Join workflow:
+## Network:
+### Join workflow:
+```
 Client Connects
       │
       ▼
@@ -21,3 +22,4 @@ Receive World Snapshot
       │
       ▼
 Start Sending Commands
+```

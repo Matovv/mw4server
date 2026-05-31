@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sync/atomic"
 
+	"github.com/Matovv/mw4server/internal/pkg/types"
 	"github.com/gorilla/websocket"
 )
 
@@ -16,23 +17,19 @@ var upgrader = websocket.Upgrader{
 
 type Server struct {
     SessionManager sessionManager
-
     NextPlayerID atomic.Uint64
 }
 
 func NewServer(
 	sm sessionManager,
 ) *Server {
-
 	return &Server{
 		SessionManager: sm,
 	}
 }
 
 func (s *Server) Start(addr string) error {
-
 	mux := http.NewServeMux()
-
 	mux.HandleFunc(
 		"/ws",
 		s.handleWebsocket,
@@ -48,37 +45,51 @@ func (s *Server) handleWebsocket(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
 	conn, err := upgrader.Upgrade(
 		w,
 		r,
 		nil,
 	)
-
 	if err != nil {
 		return
 	}
-
 	s.HandleConnection(conn)
 }
 
-
-
 func (s *Server) HandleConnection(
-    conn *websocket.Conn,
+	conn *websocket.Conn,
 ) {
-
-    playerID := s.NextPlayerID.Add(1)
-
-    client := &Client{
-        ID: playerID,
-        Conn: conn,
-        SendChan: make(chan []byte, 128),
-    }
+	playerID := s.NextPlayerID.Add(1)
+	client := &Client{
+		ID:       playerID,
+		Conn:     conn,
+		SendChan: make(chan []byte, 128),
+	}
 	log.Println("new connection - id:", playerID)
-    go client.writeLoop()
+	go client.writeLoop()
+	client.readLoop(s)
+	s.HandleDisconnect(client, false)
+}
 
-    client.readLoop(s)
+func (s *Server) HandleDisconnect(
+	client *Client,
+	force bool,
+) {
+	if client.SessionID == "" {
+		return
+	}
+	session, err := s.SessionManager.GetSession(
+		client.SessionID,
+	)
+	if err != nil {
+		log.Println("error on player disconnect:", err.Error())
+		return
+	}
+	session.RemovePlayer(types.PlayerID(client.ID), force)
+	client.Close()
+	log.Println(
+		"player", client.ID, "disconnected:",
+	)
 }
 
 func (s *Server) HandlePacket(
