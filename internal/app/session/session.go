@@ -121,9 +121,11 @@ func (s *Session) BroadcastState() {
             snapshot.Units,
             protocol.UnitSnapshot{
                 ID: uint64(unit.ID),
+				Faction: string(unit.Faction),
                 X: unit.Position.X,
                 Y: unit.Position.Y,
                 HP: unit.HP,
+				Mana: unit.Mana,
             },
         )
     }    

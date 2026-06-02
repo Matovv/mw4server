@@ -5,6 +5,7 @@ import "github.com/Matovv/mw4server/internal/pkg/types"
 type Unit struct {
 	ID            types.UnitID
 	OwnerPlayerID types.PlayerID
+	Faction       types.Faction
 	Position      types.Vec2	
 	TargetID      types.TargetID
 	Dead          bool
