@@ -26,13 +26,14 @@ type Session struct {
 func NewSession(
 	id types.SessionID,
 	mapName string,
+	world *world.World,
 ) *Session {
 	s := &Session{
 		ID: id,
 		MapName: mapName,
 		Clients: make(map[uint64]ClientSender),
 		CommandQueue: &CommandQueue{},
-		World: world.NewWorld(mapName),
+		World: world,
 	}
 	for i := range s.Slots {
 		s.Slots[i] = &models.PlayerSlot{
