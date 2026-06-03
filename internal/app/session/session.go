@@ -121,11 +121,12 @@ func (s *Session) BroadcastState() {
         snapshot.Units = append(
             snapshot.Units,
             protocol.UnitSnapshot{
+				PrefabID: uint64(unit.PrefabID),
                 ID: uint64(unit.ID),
 				Faction: string(unit.Faction),
                 X: unit.Position.X,
                 Y: unit.Position.Y,
-                HP: unit.HP,
+                HP: unit.Hp,
 				Mana: unit.Mana,
             },
         )

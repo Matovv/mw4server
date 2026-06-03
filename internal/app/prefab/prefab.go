@@ -11,7 +11,7 @@ type PrefabManager struct {
 
 func NewPrefabManager() *PrefabManager {
 	return &PrefabManager{
-		Units: make(map[types.PrefabID]models.PrefabUnit, 100),
+		Units: make(map[types.PrefabID]models.PrefabUnit, 64),
 	}
 }
 
@@ -21,4 +21,15 @@ func (m *PrefabManager) GetPrefabUnit(prefabId types.PrefabID) *models.PrefabUni
 		return &unit
 	}
 	return nil
+}
+
+func (m *PrefabManager) InitTestData() {
+	prefabUnit1 := models.PrefabUnit{
+		PrefabID: 1,
+		Size: 100,
+		MaxHp: 300,
+		MaxMana: 100,
+		MoveSpeed: 300,
+	}
+	m.Units[prefabUnit1.PrefabID] = prefabUnit1
 }
