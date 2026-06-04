@@ -61,7 +61,7 @@ func (s *Session) AssignPlayer(
             slot.Connected = true
 			s.Clients[client.GetId()] = client
 			log.Println("player",playerID,"assigned to session", s.ID, "slot", i)
-			playerUnit, err := s.World.SpawnUnit(1, playerID, types.FactionNone, types.Vec2{X:0,Y:0})
+			playerUnit, err := s.World.SpawnUnit(1, playerID, types.FactionNone, types.NewTransform(0,0,0))
 			if err != nil {
 				return nil,0, err
 			}

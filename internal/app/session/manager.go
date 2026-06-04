@@ -12,7 +12,7 @@ import (
 type SessionManager struct {
     mu sync.RWMutex	
     Sessions map[types.SessionID]*Session
-	tickRate uint8
+	TickRate uint8
 }
 
 func NewSessionManager(tickRate uint8) *SessionManager {
@@ -21,7 +21,7 @@ func NewSessionManager(tickRate uint8) *SessionManager {
 	}
 	return &SessionManager{
 		Sessions: make(map[types.SessionID]*Session),
-		tickRate: tickRate,
+		TickRate: tickRate,
 	}
 }
 
@@ -42,11 +42,11 @@ func (m *SessionManager) AddSession(s *Session) {
 }
 
 func (m *SessionManager) Run() {
-	log.Println("session manager online!", "tick rate:", m.tickRate, "per second")	
-	ticker := time.NewTicker(time.Second / time.Duration(m.tickRate))
+	log.Println("session manager online!", "tick rate:", m.TickRate, "per second")	
+	ticker := time.NewTicker(time.Second / time.Duration(m.TickRate))
 	for range ticker.C {
 		for _, session := range m.Sessions {
-			session.SessionTick(m.tickRate)
+			session.SessionTick(m.TickRate)
 		}
 	}
 }

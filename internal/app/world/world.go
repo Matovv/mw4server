@@ -30,7 +30,7 @@ func (w *World) SpawnUnit(
 	prefabID types.PrefabID,
 	playerID types.PlayerID,
 	faction types.Faction,
-	position types.Vec2,
+	transform *types.Transform,
 ) (*Unit, error) {
 	prefab := w.PrefabManager.GetPrefabUnit(
 		prefabID,
@@ -45,7 +45,7 @@ func (w *World) SpawnUnit(
 		ID:            	unitID,
 		OwnerPlayerID:  playerID,
 		Faction: 	    faction,
-		Position:      	position,
+		Transform:      *transform,
 		Hp:   			prefab.MaxHp,
 		Mana: 			prefab.MaxMana,
 		Stats: UnitStats{
@@ -82,9 +82,8 @@ func (w *World) updateMovement(tickRate uint8) {
 		if !unit.Moving {
 			continue
 		}
-		newPos, moving := math.Move(unit.Position, unit.MoveTarget, unit.Stats.MoveSpeed, tickRate)
-		unit.Position.X = newPos.X
-		unit.Position.Y = newPos.Y
+		newT, moving := math.Move(unit.Transform, unit.MoveTarget, unit.Stats.MoveSpeed, tickRate)
+		unit.Transform.Set(newT)
 		unit.Moving = moving
 	}
 }

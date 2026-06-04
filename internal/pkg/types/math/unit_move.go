@@ -7,15 +7,15 @@ import (
 )
 
 func Move(
-	currentPos types.Vec2,
+	currentT types.Transform,
 	targetPos types.Vec2,
 	speed uint64,
 	tickRate uint8,
-) (types.Vec2, bool) {
-	dx := targetPos.X - currentPos.X
-	dy := targetPos.Y - currentPos.Y
+) (types.Transform, bool) {
+	dx := targetPos.X - currentT.Position.X
+	dy := targetPos.Y - currentT.Position.Y
 	if dx == 0 && dy == 0 {
-		return targetPos, false
+		return currentT, false
 	}
 	distance := int64(
 		math.Sqrt(
@@ -23,25 +23,29 @@ func Move(
 		),
 	)
 	if distance == 0 {
-		return targetPos, false
+		return currentT, false
 	}
+	rotation := calculateRotation(
+		dx,
+		dy,
+	)
+	currentT.Rotation = rotation
 	step := int64(speed) / int64(tickRate)
-	// Destination reachable this tick.
 	if distance <= step {
-		return targetPos, false
+		currentT.Position = targetPos
+		return currentT, false
 	}
 	moveX := dx * step / distance
 	moveY := dy * step / distance
-	if moveX == 0 {
+	if moveX == 0 && dx != 0 {
 		moveX = sign(dx)
 	}
-	if moveY == 0 {
+	if moveY == 0 && dy != 0 {
 		moveY = sign(dy)
 	}
-	return types.Vec2{
-		X: currentPos.X + moveX,
-		Y: currentPos.Y + moveY,
-	}, true
+	currentT.Position.X += moveX
+	currentT.Position.Y += moveY
+	return currentT, true
 }
 
 func sign(v int64) int64 {
@@ -53,4 +57,21 @@ func sign(v int64) int64 {
 	default:
 		return 0
 	}
+}
+
+func calculateRotation(
+	dx int64,
+	dy int64,
+) types.Rotation {
+	angle := math.Atan2(
+		float64(dy),
+		float64(dx),
+	)
+	degrees := angle * 180 / math.Pi
+	if degrees < 0 {
+		degrees += 360
+	}
+	return types.Rotation(
+		uint16(degrees),
+	)
 }

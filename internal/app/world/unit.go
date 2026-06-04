@@ -11,7 +11,7 @@ type Unit struct {
 	ID            types.UnitID
 	OwnerPlayerID types.PlayerID
 	Faction       types.Faction
-	Position      types.Vec2	
+	types.Transform
 	TargetID      types.TargetID
     MoveTarget 	  types.Vec2
 	Moving        bool
@@ -35,6 +35,7 @@ func (u *Unit) ToSnapshot() protocol.UnitSnapshot {
 		Faction: string(u.Faction),
 		X: u.Position.X,
 		Y: u.Position.Y,
+		Rotation: uint16(u.Rotation),
 		Hp: u.Hp,
 		Mana: u.Mana,
     }

@@ -24,3 +24,9 @@ func (q *CommandQueue) Drain() []command.Command {
 	q.commands = nil
 	return cmds
 }
+
+func (q *CommandQueue) Len() int {
+    q.mu.Lock()
+    defer q.mu.Unlock()
+    return len(q.commands)
+}

@@ -14,6 +14,7 @@ type UnitSnapshot struct {
 	Faction     string
 	X           int64
 	Y           int64
+    Rotation    uint16
 	Hp          uint64
 	Mana        uint64
 }

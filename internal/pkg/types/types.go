@@ -21,6 +21,30 @@ type Vec2 struct {
 	X int64
 	Y int64
 }
+type Rotation uint16
+type Transform struct {
+	Position Vec2
+	Rotation
+}
+func (t *Transform) Set(newT Transform) {
+	t.Position.X = newT.Position.X
+	t.Position.Y = newT.Position.Y
+	rot := newT.Rotation
+	if rot > 359 {
+		rot = 0
+	}
+	t.Rotation = rot
+}
+func NewTransform(x, y int64, rotation int16) *Transform{
+	newPos := Vec2{
+		X: x,
+		Y: y,
+	}
+	return &Transform{
+		Position: newPos,
+		Rotation: Rotation(rotation),
+	}
+}
 
 type Faction string
 const (

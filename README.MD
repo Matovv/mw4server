@@ -23,3 +23,6 @@ Receive World Snapshot
       ▼
 Start Sending Commands
 ```
+
+## Testing 
+go test ./...
