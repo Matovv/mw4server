@@ -21,7 +21,7 @@ func TestPlayerMove(
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = client.Move(1000, 0)
+	err = client.Move(-1000, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,5 +44,8 @@ func TestPlayerMove(
 	]
 	if unit.Transform.Position.X == 0 {
 		t.Fatal("unit did not move")
+	}
+	if unit.Transform.Rotation == 0 {
+		t.Fatal("unit did not rotate")
 	}
 }
