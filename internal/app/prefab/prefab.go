@@ -26,6 +26,7 @@ func (m *PrefabManager) GetPrefabUnit(prefabId types.PrefabID) *models.PrefabUni
 func (m *PrefabManager) InitTestData() {
 	prefabUnit1 := models.PrefabUnit{
 		PrefabID: 1,
+		GameModelID: "test1",
 		Size: 100,
 		MaxHp: 300,
 		MaxMana: 100,

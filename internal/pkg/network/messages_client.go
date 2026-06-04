@@ -11,6 +11,6 @@ type MoveRequest struct {
 }
 
 type AttackRequest struct {
-    UnitID uint64
-    TargetID uint64
+    UnitID   uint64   `json:"unit_id"`
+    TargetID uint64   `json:"target_id"`
 }

@@ -8,12 +8,13 @@ type ObjectSnapshot struct {
 }
 
 type UnitSnapshot struct {
-    PrefabID    uint64
+    GameModelID string
+    Size        uint64
 	ID          uint64
 	Faction     string
 	X           int64
 	Y           int64
-	HP          uint64
+	Hp          uint64
 	Mana        uint64
 }
 

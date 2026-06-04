@@ -38,8 +38,9 @@ func (w *World) SpawnUnit(
 	}
 	unitID := w.NewUnitID()
 	unit := &Unit{
+		GameModelID:    prefab.GameModelID,
+		Size: 			prefab.Size,
 		ID:            	unitID,
-		PrefabID:      	prefabID,
 		Faction: 	    faction,
 		Position:      	position,
 		Hp:   			prefab.MaxHp,
