@@ -8,7 +8,6 @@ import (
 	"github.com/Matovv/mw4server/internal/app/session"
 	"github.com/Matovv/mw4server/internal/app/world"
 	"github.com/Matovv/mw4server/internal/pkg/network"
-	"github.com/Matovv/mw4server/internal/pkg/types"
 )
 
 const (
@@ -22,7 +21,7 @@ func main() {
 	prefabManager := prefab.NewPrefabManager()
 	prefabManager.InitTestData()
 	world := world.NewWorld("test_1", prefabManager)
-	world.SpawnUnit(1, types.FactionNone, types.Vec2{X:0,Y:0})
+	//world.SpawnUnit(1, 1, types.FactionNone, types.Vec2{X:0,Y:0})
 	testSession := session.NewSession(
 		"session-1",
 		"test",	

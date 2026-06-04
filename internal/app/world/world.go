@@ -3,6 +3,7 @@ package world
 import (
 	"github.com/Matovv/mw4server/internal/pkg/errors"
 	"github.com/Matovv/mw4server/internal/pkg/types"
+	"github.com/Matovv/mw4server/internal/pkg/types/math"
 )
 
 type World struct {
@@ -27,6 +28,7 @@ func NewWorld(mapName string, prefabManager prefabManager) *World {
 
 func (w *World) SpawnUnit(
 	prefabID types.PrefabID,
+	playerID types.PlayerID,
 	faction types.Faction,
 	position types.Vec2,
 ) (*Unit, error) {
@@ -41,6 +43,7 @@ func (w *World) SpawnUnit(
 		GameModelID:    prefab.GameModelID,
 		Size: 			prefab.Size,
 		ID:            	unitID,
+		OwnerPlayerID:  playerID,
 		Faction: 	    faction,
 		Position:      	position,
 		Hp:   			prefab.MaxHp,
@@ -60,7 +63,7 @@ func (w *World) NewUnitID() types.UnitID {
 	return id
 }
 
-func (w *World) Update() {
+func (w *World) Update(tickRate uint8) {
     // later:
 	// movement
 	// combat
@@ -69,5 +72,19 @@ func (w *World) Update() {
 
 	if w == nil {
 		return
+	}
+
+	w.updateMovement(tickRate)
+}
+
+func (w *World) updateMovement(tickRate uint8) {
+	for _, unit := range w.Units {
+		if !unit.Moving {
+			continue
+		}
+		newPos, moving := math.Move(unit.Position, unit.MoveTarget, unit.Stats.MoveSpeed, tickRate)
+		unit.Position.X = newPos.X
+		unit.Position.Y = newPos.Y
+		unit.Moving = moving
 	}
 }

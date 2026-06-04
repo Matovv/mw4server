@@ -13,6 +13,8 @@ type Unit struct {
 	Faction       types.Faction
 	Position      types.Vec2	
 	TargetID      types.TargetID
+    MoveTarget 	  types.Vec2
+	Moving        bool
 	Dead          bool
 	Hp            uint64
 	Mana          uint64	

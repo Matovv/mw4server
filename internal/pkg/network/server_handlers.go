@@ -24,7 +24,7 @@ func (s *Server) handleJoinSession(
 		return err
 	}		
 	client.SessionID = types.SessionID(req.SessionID)	
-	slot, err := session.AssignPlayer(
+	slot, playerUnitId, err := session.AssignPlayer(
 		types.PlayerID(client.ID),
 		client,
 	)
@@ -34,6 +34,7 @@ func (s *Server) handleJoinSession(
 	response := JoinSessionResponse{
 		PlayerID:  client.ID,
 		SlotIndex: slot.Index,
+		UnitID:    uint64(playerUnitId),
 		Tick:      session.GetTick(),
 	}	
 	client.Send(response)

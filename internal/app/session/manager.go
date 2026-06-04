@@ -46,7 +46,7 @@ func (m *SessionManager) Run() {
 	ticker := time.NewTicker(time.Second / time.Duration(m.tickRate))
 	for range ticker.C {
 		for _, session := range m.Sessions {
-			session.SessionTick()
+			session.SessionTick(m.tickRate)
 		}
 	}
 }

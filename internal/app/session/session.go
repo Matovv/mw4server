@@ -50,7 +50,7 @@ func (s *Session) GetTick() uint64 {
 func (s *Session) AssignPlayer(
     playerID types.PlayerID,
 	client ClientSender,
-) (*models.PlayerSlot, error) {
+) (*models.PlayerSlot, types.UnitID, error) {
 	log.Println("assigning player...")
     for i, slot := range s.Slots {
         if slot == nil {
@@ -61,10 +61,14 @@ func (s *Session) AssignPlayer(
             slot.Connected = true
 			s.Clients[client.GetId()] = client
 			log.Println("player",playerID,"assigned to session", s.ID, "slot", i)
-            return slot, nil
+			playerUnit, err := s.World.SpawnUnit(1, playerID, types.FactionNone, types.Vec2{X:0,Y:0})
+			if err != nil {
+				return nil,0, err
+			}
+            return slot,playerUnit.ID,nil
         }
     }
-    return nil, errors.ErrSessionFull
+    return nil,0, errors.ErrSessionFull
 }
 
 func (s *Session) RemovePlayer(
@@ -92,11 +96,11 @@ func (s *Session) RemovePlayer(
 	}
 }
 
-func (s *Session) SessionTick() {
+func (s *Session) SessionTick(tickRate uint8) {
 	s.Tick++
 	cmds := s.CommandQueue.Drain()
 	s.ProcessCommands(cmds)
-	s.World.Update()
+	s.World.Update(tickRate)
 	s.BroadcastState()
 }
 

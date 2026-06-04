@@ -1,5 +1,9 @@
 package types
 
+const (
+	WorldScale = 1000
+)
+
 type SessionID string
 type PlayerID uint64
 type UnitID uint64

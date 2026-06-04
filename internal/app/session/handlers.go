@@ -10,7 +10,8 @@ func (s *Session) handleMove(cmd *command.MoveCommand) {
     if unit == nil {
         return
     }
-    unit.Position = move.Position    
+    unit.MoveTarget = move.Position
+    unit.Moving = true    
 }
 
 func (s *Session) handleAttack(cmd *command.AttackCommand) {
