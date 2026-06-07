@@ -128,7 +128,7 @@ func (s *Session) BroadcastState() {
         )
     }    
     for _, client := range s.Clients {
-        client.Send(snapshot)
+        client.SendPacket(types.PacketWorldSnapshot, snapshot)
     }
 }
 

@@ -37,7 +37,7 @@ func (s *Server) handleJoinSession(
 		UnitID:    uint64(playerUnitId),
 		Tick:      session.GetTick(),
 	}	
-	client.Send(response)
+	client.SendPacket(types.PacketJoinSessionResponse, response)
 	return nil
 }
 

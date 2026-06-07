@@ -31,11 +31,17 @@ func (c *Client) GetId() uint64 {
 	return c.ID
 }
 
-func (c *Client) Send(v any) error {
+func (c *Client) SendPacket(
+	packetType string,
+	payload any,
+) error {
 	if c.Closed.Load() {
 		return errors.ErrDisconnected
 	}
-	data, err := json.Marshal(v)
+	data, err := NewPacket(
+		packetType,
+		payload,
+	)
 	if err != nil {
 		return err
 	}
@@ -45,7 +51,6 @@ func (c *Client) Send(v any) error {
 	default:
 		return errors.ErrSendQueueFull
 	}
-
 }
 
 func (c *Client) writeLoop() {

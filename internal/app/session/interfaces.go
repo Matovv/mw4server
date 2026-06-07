@@ -2,5 +2,8 @@ package session
 
 type ClientSender interface {
 	GetId() uint64
-    Send(any) error
+    SendPacket(
+		packetType string,
+		payload any,
+	) error
 }

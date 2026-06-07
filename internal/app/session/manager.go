@@ -44,6 +44,7 @@ func (m *SessionManager) AddSession(s *Session) {
 func (m *SessionManager) Run() {
 	log.Println("session manager online!", "tick rate:", m.TickRate, "per second")	
 	ticker := time.NewTicker(time.Second / time.Duration(m.TickRate))
+	defer ticker.Stop()
 	for range ticker.C {
 		for _, session := range m.Sessions {
 			session.SessionTick(m.TickRate)
