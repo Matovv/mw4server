@@ -8,6 +8,11 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type JoinSessionResponsePacket struct {
+    Type  string   `json:"type"`
+    Data  network.JoinSessionResponse    `json:"data"`    
+}
+
 type TestClient struct {
 	Conn   *websocket.Conn
 	UnitID uint64
@@ -56,12 +61,12 @@ func (c *TestClient) JoinSession(
 		return err
 	}
 
-	var resp network.JoinSessionResponse
+	var resp JoinSessionResponsePacket
 	if err := json.Unmarshal(data, &resp); err != nil {
 		return err
 	}
 
-	c.UnitID = resp.UnitID
+	c.UnitID = resp.Data.UnitID
 
 	return nil
 }
