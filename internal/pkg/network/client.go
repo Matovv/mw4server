@@ -3,10 +3,16 @@ package network
 import (
 	"encoding/json"
 	"sync/atomic"
+	"time"
 
 	"github.com/Matovv/mw4server/internal/pkg/errors"
 	"github.com/Matovv/mw4server/internal/pkg/types"
 	"github.com/gorilla/websocket"
+)
+
+const (
+	PongWait = 15 * time.Second
+	PingPeriod = 5 * time.Second
 )
 
 type Client struct {
@@ -18,10 +24,7 @@ type Client struct {
 }
 
 func (c *Client) Close() {
-	if !c.Closed.CompareAndSwap(
-		false,
-		true,
-	) {
+	if !c.Closed.CompareAndSwap(false, true) {
 		return
 	}
 	_ = c.Conn.Close()
@@ -31,17 +34,11 @@ func (c *Client) GetId() uint64 {
 	return c.ID
 }
 
-func (c *Client) SendPacket(
-	packetType string,
-	payload any,
-) error {
+func (c *Client) SendPacket(packetType string, payload any) error {
 	if c.Closed.Load() {
 		return errors.ErrDisconnected
 	}
-	data, err := NewPacket(
-		packetType,
-		payload,
-	)
+	data, err := NewPacket(packetType, payload)
 	if err != nil {
 		return err
 	}
@@ -54,41 +51,60 @@ func (c *Client) SendPacket(
 }
 
 func (c *Client) writeLoop() {
+	ticker := time.NewTicker(PingPeriod)
+	defer ticker.Stop()
 	for {
-		msg, ok := <-c.SendChan
-		if !ok {
-			return
-		}
-		err := c.Conn.WriteMessage(
-			websocket.TextMessage,
-			msg,
-		)
-		if err != nil {
-			c.Close()
-			return
+		select {
+		case msg, ok := <-c.SendChan:
+			if !ok {
+				return
+			}
+			if err := c.Conn.WriteMessage(websocket.TextMessage, msg); err != nil {
+				c.Close()
+				return
+			}
+		case <-ticker.C:
+			if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				c.Close()
+				return
+			}
 		}
 	}
 }
 
 func (c *Client) readLoop(
-    server *Server,
+	server *Server,
 ) {
     defer c.Conn.Close()
-    for {
-        _, data, err := c.Conn.ReadMessage()
-        if err != nil {
-            return
-        }
-        var packet Packet
-        if err := json.Unmarshal(
-            data,
-            &packet,
-        ); err != nil {
-            continue
-        }
-        server.HandlePacket(
-            c,
-            packet,
-        )
-    }
+	c.Conn.SetReadDeadline(
+		time.Now().Add(
+			PongWait,
+		),
+	)
+	c.Conn.SetPongHandler(
+		func(string) error {
+			return c.Conn.SetReadDeadline(
+				time.Now().Add(
+					PongWait,
+				),
+			)
+		},
+	)
+	for {
+		_, data, err := c.Conn.ReadMessage()
+		if err != nil {
+			return
+		}
+		var packet Packet
+		if err := json.Unmarshal(
+			data,
+			&packet,
+		); err != nil {
+			continue
+		}
+		server.HandlePacket(
+			c,
+			packet,
+		)
+	}
 }
