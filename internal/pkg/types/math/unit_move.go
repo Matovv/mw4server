@@ -59,19 +59,20 @@ func sign(v int64) int64 {
 	}
 }
 
+// Rotation cycle - 0: right, 90: down, 180: right, 270: up
 func calculateRotation(
-	dx int64,
-	dy int64,
+    dx int64,
+    dy int64,
 ) types.Rotation {
-	angle := math.Atan2(
-		float64(dy),
-		float64(dx),
-	)
-	degrees := angle * 180 / math.Pi
-	if degrees < 0 {
-		degrees += 360
-	}
-	return types.Rotation(
-		uint16(degrees),
-	)
+    angle := math.Atan2(
+        float64(-dy),
+        float64(dx),
+    )
+    degrees := angle * 180 / math.Pi
+    if degrees < 0 {
+        degrees += 360
+    }
+    return types.Rotation(
+        uint16(degrees),
+    )
 }
