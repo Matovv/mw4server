@@ -1,15 +1,15 @@
 package world
 
 import (
+	"github.com/Matovv/mw4server/internal/app/unit"
 	"github.com/Matovv/mw4server/internal/pkg/errors"
 	"github.com/Matovv/mw4server/internal/pkg/types"
-	"github.com/Matovv/mw4server/internal/pkg/types/math"
 )
 
 type World struct {
 	MapName       string
 	PrefabManager prefabManager
-	Units   	  map[types.UnitID]*Unit
+	Units   	  map[types.UnitID]*unit.Unit
 	Objects       map[types.ObjectID]*Object
 	NeutralAI     *NeutralAI
 	NextUnitID    types.UnitID
@@ -19,7 +19,7 @@ func NewWorld(mapName string, prefabManager prefabManager) *World {
 	return &World{
 		MapName:   mapName,
 		PrefabManager: prefabManager,
-		Units:     make(map[types.UnitID]*Unit, 256),
+		Units:     make(map[types.UnitID]*unit.Unit, 256),
 		Objects:   make(map[types.ObjectID]*Object, 256),
 		NeutralAI: &NeutralAI{},
 		NextUnitID: 1,
@@ -31,7 +31,7 @@ func (w *World) SpawnUnit(
 	playerID types.PlayerID,
 	faction types.Faction,
 	transform *types.Transform,
-) (*Unit, error) {
+) (*unit.Unit, error) {
 	prefab := w.PrefabManager.GetPrefabUnit(
 		prefabID,
 	)
@@ -39,7 +39,7 @@ func (w *World) SpawnUnit(
 		return nil, errors.ErrPrefabUnitNotFound
 	}
 	unitID := w.NewUnitID()
-	unit := &Unit{
+	unit := &unit.Unit{
 		GameModelID:    prefab.GameModelID,
 		Size: 			prefab.Size,
 		ID:            	unitID,
@@ -48,7 +48,7 @@ func (w *World) SpawnUnit(
 		Transform:      *transform,
 		Hp:   			prefab.MaxHp,
 		Mana: 			prefab.MaxMana,
-		Stats: UnitStats{
+		Stats: unit.UnitStats{
 			MaxHp:     	prefab.MaxHp,
 			MaxMana:   	prefab.MaxMana,
 			MoveSpeed: 	prefab.MoveSpeed,
@@ -82,8 +82,6 @@ func (w *World) updateMovement(tickRate uint8) {
 		if !unit.Moving {
 			continue
 		}
-		newT, moving := math.Move(unit.Transform, unit.MoveTarget, unit.Stats.MoveSpeed, tickRate)
-		unit.Transform.Set(newT)
-		unit.Moving = moving
+		unit.Move(unit.MoveTarget, tickRate)
 	}
 }

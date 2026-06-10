@@ -1,4 +1,4 @@
-package math
+package unit
 
 import (
 	"math"
@@ -6,7 +6,16 @@ import (
 	"github.com/Matovv/mw4server/internal/pkg/types"
 )
 
-func Move(
+func (u *Unit) Move(
+	targetPos types.Vec2,
+	tickRate uint8,
+) {
+	newT, moving := moveUnit(u.Transform, targetPos, u.Stats.MoveSpeed, tickRate)
+	u.Transform.Set(newT)
+	u.Moving = moving
+}
+
+func moveUnit(
 	currentT types.Transform,
 	targetPos types.Vec2,
 	speed uint64,
